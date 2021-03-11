@@ -25,6 +25,7 @@ add_executable(Textured_cube
     src/quad.cpp
     src/texture.cpp
     src/terrain.cpp
+    src/cube.cpp
 )
 
 target_include_directories(Textured_cube

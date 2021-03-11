@@ -32,6 +32,7 @@ void Shader::SetUniform1i(const std::string & name, int value) const {
         return;
     }
     glUniform1i(location, value);
+    glUseProgram(0);
 }
 
 void Shader::SetUniformMatrix4f(const std::string & name, const glm::mat4 & value) const {

@@ -14,6 +14,7 @@
 #include "shader.h"
 #include "quad.h"
 #include "texture.h"
+#include "cube.h"
 
 bool Keys[1024] = {false};
 
@@ -57,22 +58,21 @@ int main(void)
     Shader shader = Shader("../common/vertex.shader", "../common/fragment.shader");
 
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::lookAt(
-        glm::vec3(0.0f, 0.0f, -100.0f), // Camera position in World Space
-        glm::vec3(0.0f, 0.0f, 0.0f),    // and looks at the origin
-        glm::vec3(0.0f, 1.0f, 0.0f)     // Head is up (set to 0,-1,0 to look upside-down)
-    );
+    glm::mat4 view;
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  70.0f);
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), WINDOW_WIDTH/WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 mvp = projection * view * model;
-    shader.Use();
     shader.SetUniformMatrix4f("mvp", mvp);
 
-    Quad quad(16.0f, 16.0f);
+    Quad quad(16.0f, 16.0f, glm::vec3(-30.0f, -10.0f, 0.0f));
     quad.init();
 
-    Quad quad2(16.0f, 16.0f, glm::vec3(20.0f, 20.0f, 0.0f));
-    quad2.init();
+    Cube cube;
+    cube.init();
     
     Texture texture;
     texture.init();
@@ -84,6 +84,10 @@ int main(void)
 	float timeStep = 1.0f / frameRate;
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -101,19 +105,30 @@ int main(void)
 
             /* Render here */
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glActiveTexture(GL_TEXTURE0);
             texture.bind();
             shader.SetUniform1i("ourTexture", 0);
+            
+            model = glm::mat4(1.0f);
+            mvp = projection * view * model;
+            shader.SetUniformMatrix4f("mvp", mvp);
+            shader.Use();
             quad.draw();
-            quad2.draw();
+
+            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+            mvp = projection * view * model;
+            shader.SetUniformMatrix4f("mvp", mvp);
+            shader.Use();
+            cube.draw();
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
         }
     }
 
+    cube.destroy();
     quad.destroy();
     texture.destroy();
 

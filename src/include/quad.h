@@ -19,6 +19,10 @@ class Quad {
         void draw();
 
     private:
+        const int m_num_vertices   = 6;
+        const int m_num_pos_coords = 3 * m_num_vertices;
+        const int m_num_tex_coords = 2 * m_num_vertices;
+
         float m_w;  // width of the quad
         float m_h;  // height of the quad
         glm::vec3 m_origin;  // bottom-left coord of the quad

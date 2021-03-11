@@ -49,7 +49,7 @@ void Quad::destroy() {
 
 void Quad::draw() {
     m_vao.bind();
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, m_num_vertices);
     m_vao.unbind();
 }
 
@@ -57,14 +57,12 @@ void Quad::initPosBuffer() {
     m_posVbo.init();
     m_posVbo.bind();
 
-    int num_vertices = 18;
-
     glm::vec3 bot_left = m_origin;
     glm::vec3 top_left = m_origin + m_up * m_h;
     glm::vec3 bot_right = m_origin + m_right * m_w;
     glm::vec3 top_right = bot_right + m_up * m_h;
 
-    float pos_coords_data[num_vertices] {
+    float pos_coords_data[m_num_pos_coords] {
         // Triangle 1
         top_left.x,  top_left.y,  top_left.z,   // top left
         top_right.x, top_right.y, top_right.z,  // top right
@@ -74,8 +72,7 @@ void Quad::initPosBuffer() {
         bot_right.x, bot_right.y, bot_right.z,  // bottom right
         bot_left.x,  bot_left.y,  bot_left.z    // bottom left
     };
-    
-    m_posVbo.loadVertices(num_vertices, pos_coords_data);
+    m_posVbo.loadVertices(m_num_pos_coords, pos_coords_data);
     m_posVbo.unbind();
 }
 
@@ -83,9 +80,7 @@ void Quad::initTexBuffer() {
     m_texVbo.init();
     m_texVbo.bind();
 
-    int num_vertices = 12;
-
-    float tex_coords_data[num_vertices] {
+    float tex_coords_data[m_num_tex_coords] {
         // Triangle 1
         m_terrain.top_lx_u, m_terrain.top_lx_v, // top left
         m_terrain.top_rx_u, m_terrain.top_rx_v, // top right
@@ -96,6 +91,6 @@ void Quad::initTexBuffer() {
         m_terrain.bot_lx_u, m_terrain.bot_lx_v  // bottom left
     };
 
-    m_texVbo.loadVertices(num_vertices, tex_coords_data);
+    m_texVbo.loadVertices(m_num_tex_coords, tex_coords_data);
     m_texVbo.unbind();
 }
