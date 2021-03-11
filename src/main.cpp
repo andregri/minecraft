@@ -57,17 +57,21 @@ int main(void)
     Shader shader = Shader("../common/vertex.shader", "../common/fragment.shader");
 
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 view = glm::lookAt(
+        glm::vec3(0.0f, 0.0f, -100.0f), // Camera position in World Space
+        glm::vec3(0.0f, 0.0f, 0.0f),    // and looks at the origin
+        glm::vec3(0.0f, 1.0f, 0.0f)     // Head is up (set to 0,-1,0 to look upside-down)
+    );
     glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), WINDOW_WIDTH/WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 mvp = projection * view * model;
     shader.Use();
-    shader.SetUniformMatrix4f("model", model);
-    shader.SetUniformMatrix4f("view", view);
-    shader.SetUniformMatrix4f("projection", projection);
+    shader.SetUniformMatrix4f("mvp", mvp);
 
-    Quad quad(0.4f, 0.4f);
+    Quad quad(16.0f, 16.0f);
     quad.init();
 
-    Quad quad2(0.4f, 0.4f, glm::vec3(-0.5f, -0.5f, 0.0f));
+    Quad quad2(16.0f, 16.0f, glm::vec3(20.0f, 20.0f, 0.0f));
     quad2.init();
     
     Texture texture;
