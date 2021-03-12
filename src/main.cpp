@@ -15,6 +15,7 @@
 #include "quad.h"
 #include "texture.h"
 #include "cube.h"
+#include "camera.h"
 
 bool Keys[1024] = {false};
 
@@ -52,7 +53,10 @@ int main(void)
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     
     glfwSetKeyCallback(window, key_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
+    /* Create a camera */
+    Camera camera;
 
     /* Create a shader */
     Shader shader = Shader("../common/vertex.shader", "../common/fragment.shader");
@@ -102,6 +106,14 @@ int main(void)
 
             /* Poll for and process events */
             glfwPollEvents();
+
+            /* Update */
+            double mouseX, mouseY;
+            glfwGetCursorPos(window, &mouseX, &mouseY);
+            int winPosX, winPosY;
+            glfwGetWindowPos(window, &winPosX, &winPosY);
+            camera.update(deltaTime, Keys, winPosX, winPosY, mouseX, mouseY);
+            view = camera.getViewMatrix();
 
             /* Render here */
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
