@@ -27,7 +27,7 @@ class Camera {
 
         glm::mat4 m_viewMat;
 
-        const float m_cameraSpeed = 50.0f;
+        const float m_cameraSpeed = 350.0f;
         const float m_mouseSensitivity = 0.01f;
 
         glm::vec3 updateDirection(int winX, int winY, double mouseX, double mouseY);

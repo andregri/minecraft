@@ -15,6 +15,11 @@ include_directories(${GLEW_INCLUDE_PATH})
 # STB_IMAGE
 add_library(STB_IMAGE "external/stb/stb_image.cpp")
 
+# libnoise
+include(${CMAKE_SOURCE_DIR}/external/cmake-modules/LibNoiseConfig.cmake)
+include_directories(${LIBNOISE_INCLUDE_PATH})
+
+
 
 # add the executable
 add_executable(Textured_cube
@@ -27,6 +32,7 @@ add_executable(Textured_cube
     src/terrain.cpp
     src/cube.cpp
     src/camera.cpp
+    src/map.cpp
 )
 
 target_include_directories(Textured_cube
@@ -39,4 +45,5 @@ target_link_libraries(Textured_cube PUBLIC
     glfw
     ${GLFW_LIBRARIES}
     STB_IMAGE
+    noise
 )

@@ -17,6 +17,7 @@
 #include "texture.h"
 #include "cube.h"
 #include "camera.h"
+#include "map.h" 
 
 bool Keys[1024] = {false};
 
@@ -56,6 +57,16 @@ int main(void)
     glfwSetKeyCallback(window, key_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
+    /* Create a map*/
+    int mapHeight = 32;
+    int mapWidth = 32;
+    float** elevation = new float*[mapHeight];
+    for (int i = 0; i < mapHeight; ++i) {
+        elevation[i] = new float[mapWidth];
+    }
+    map::generate(mapWidth, mapHeight, elevation);
+    map::savePPM("prova.ppm", mapWidth, mapHeight, elevation);
+
     /* Create a camera */
     Camera camera;
 
@@ -73,18 +84,34 @@ int main(void)
     glm::mat4 mvp = projection * view * model;
     shader.SetUniformMatrix4f("mvp", mvp);
 
+    /* Create a quad */
     Quad quad(16.0f, 16.0f, glm::vec3(-30.0f, -10.0f, 0.0f));
     quad.init();
 
+    /* Create a cube */
     Cube cube;
     cube.init();
 
+    /* Create a cube base */
     std::vector<Cube> cubeBase;
     for (int i = 0; i < 16; ++i) {
         for (int j = 0; j < 16; ++j) {
             Cube c(i*16.0f, -20.0f, j*16.0f);
             c.init();
             cubeBase.push_back(c);
+        }
+    }
+
+    /* Create cube for the map */
+    std::vector<Cube> cubeMap; 
+    for (int z = 0; z < mapHeight; ++z) {
+        for (int x = 0; x < mapWidth; ++x) {
+            int y = static_cast<int>(elevation[z][x] * 50);
+            for (int yy = 0; yy < y; ++yy) {
+                Cube c(x*16.0f, yy*16.0f, z*16.0f);
+                c.init();
+                cubeMap.push_back(c);
+            }
         }
     }
     
@@ -151,6 +178,15 @@ int main(void)
             shader.SetUniformMatrix4f("mvp", mvp);
             shader.Use();
             for (auto c : cubeBase) {
+                c.draw();
+            }
+
+            // Draw a cube map
+            model = glm::mat4(1.0f);
+            mvp = projection * view * model;
+            shader.SetUniformMatrix4f("mvp", mvp);
+            shader.Use();
+            for (auto c : cubeMap) {
                 c.draw();
             }
 
