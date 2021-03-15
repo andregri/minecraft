@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "shader.h"
 #include "quad.h"
@@ -68,7 +69,7 @@ int main(void)
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), WINDOW_WIDTH/WINDOW_HEIGHT, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), WINDOW_WIDTH/WINDOW_HEIGHT, 0.1f, 1000.0f);
     glm::mat4 mvp = projection * view * model;
     shader.SetUniformMatrix4f("mvp", mvp);
 
@@ -77,6 +78,15 @@ int main(void)
 
     Cube cube;
     cube.init();
+
+    std::vector<Cube> cubeBase;
+    for (int i = 0; i < 16; ++i) {
+        for (int j = 0; j < 16; ++j) {
+            Cube c(i*16.0f, -20.0f, j*16.0f);
+            c.init();
+            cubeBase.push_back(c);
+        }
+    }
     
     Texture texture;
     texture.init();
@@ -134,6 +144,15 @@ int main(void)
             shader.SetUniformMatrix4f("mvp", mvp);
             shader.Use();
             cube.draw();
+
+            // Draw a cube base of 16x16 blocks
+            model = glm::mat4(1.0f);
+            mvp = projection * view * model;
+            shader.SetUniformMatrix4f("mvp", mvp);
+            shader.Use();
+            for (auto c : cubeBase) {
+                c.draw();
+            }
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);

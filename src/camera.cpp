@@ -51,7 +51,7 @@ glm::vec3 Camera::updateDirection(int winX, int winY, double mouseX, double mous
     // Compute the movement of the mouse
     float offsetX = mouseX - 400.0f;
     float offsetY = mouseY - 300.0f;
-    std::cout << offsetX << " " << offsetY << " " << mouseX << " " << mouseY << " " << winX << " " << winY << std::endl;
+    //std::cout << offsetX << " " << offsetY << " " << mouseX << " " << mouseY << " " << winX << " " << winY << std::endl;
 
     m_yaw   = (220.0f / 800.0f) * (offsetX + 400.0f) - 20.0f; // (-400;400) -> (-20;200)
     //m_yaw   = (178.0f / 800.0f) * (offsetX + 400.0f) + 1.0f; // (-400;400) -> (1;179)

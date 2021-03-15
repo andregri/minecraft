@@ -9,6 +9,7 @@
 class Cube {
     public:
         Cube();
+        Cube(float, float, float);
 
         void init();
         void destroy();

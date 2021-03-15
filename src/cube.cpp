@@ -8,6 +8,13 @@ Cube::Cube() :
     m_terrain_left(Grass2), m_terrain_right(Grass2),
     m_vao(), m_posVbo(), m_texVbo() {}
 
+Cube::Cube(float x, float y, float z) :
+    m_side(16.0f), m_origin(x, y, z),
+    m_terrain_front(Grass2), m_terrain_behind(Grass2),
+    m_terrain_top(Grass), m_terrain_bot(Dirt),
+    m_terrain_left(Grass2), m_terrain_right(Grass2),
+    m_vao(), m_posVbo(), m_texVbo() {}
+
 void Cube::init() {
     m_vao.init();
     m_vao.bind();
