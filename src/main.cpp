@@ -58,8 +58,8 @@ int main(void)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     /* Create a map*/
-    int mapHeight = 32;
-    int mapWidth = 32;
+    int mapHeight = 128;
+    int mapWidth = 128;
     float** elevation = new float*[mapHeight];
     for (int i = 0; i < mapHeight; ++i) {
         elevation[i] = new float[mapWidth];
@@ -127,6 +127,8 @@ int main(void)
     float lastFrame = 0.0f;
 
     // Enable depth test
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 

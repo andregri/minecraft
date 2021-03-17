@@ -39,5 +39,6 @@ extern Terrain Grass;
 extern Terrain Dirt;
 extern Terrain Grass2;
 extern Terrain Planks;
+extern Terrain Water;
 
 #endif

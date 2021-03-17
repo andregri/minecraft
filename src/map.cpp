@@ -8,6 +8,44 @@
 #include <noise/noise.h>
 #include <noise/noiseutils.h>
 
+Map::Map(int width, int height, const std::string& filepath)
+: m_width(width), m_height(height), m_filepath(filepath) {
+    // init the elevation array
+    m_elevation = new float*[m_height];
+    if (m_elevation) {
+        for (int y = 0; y < m_height; ++y) {
+            m_elevation[y] = new float[m_width];
+        }
+    } 
+}
+
+Map::~Map() {
+
+}
+
+void Map::generate() {
+    noise::module::Perlin perlineNoise;
+}
+
+map::Color map::toColor(map::Biome biome) {
+    switch (biome) {
+        case map::Biome::WATER:
+            return {0, 0, 255};
+        case map::Biome::BEACH:
+            return {255, 255, 0};
+        case map::Biome::FOREST:
+            return {10, 110, 5};
+        case map::Biome::JUNGLE:
+            return {80, 170, 70};
+        case map::Biome::SAVANNAH:
+            return {160, 120, 20};
+        case map::Biome::DESERT:
+            return {85, 100, 100};
+        case map::Biome::SNOW:
+            return {176, 230, 223};
+    }
+}
+
 float map::noise(float x, float y) {
     noise::module::Perlin myModule;
     double value = myModule.GetValue (x, y, 0.0f);
@@ -36,17 +74,28 @@ void map::generate(int width, int height, float** elevation) {
     }
 }
 
+map::Biome map::biome(float elevation) {
+    if (elevation < 0.1) return map::Biome::WATER;
+    else if (elevation < 0.2) return map::Biome::BEACH;
+    else if (elevation < 0.3) return map::Biome::FOREST;
+    else if (elevation < 0.5) return map::Biome::JUNGLE;
+    else if (elevation < 0.7) return map::Biome::SAVANNAH;
+    else if (elevation < 0.9) return map::Biome::DESERT;
+    else return map::Biome::SNOW;
+}
+
 void map::savePPM(const char* filename, int width, int height, float** elevation) {
     //std::cout << "Save" << std::endl;
     std::ofstream outFile(filename, std::ios::binary);
     outFile << "P6\n" << width << " " << height << "\n255\n";
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            uint8_t color = static_cast<uint8_t>(elevation[y][x] * 255);
+            Biome b = biome(elevation[y][x]);
+            Color color = toColor(b);
             //std::cout << x << " " << y << ": " << elevation[x][y] << " " << color << std::endl;
-            outFile << static_cast<char>(color)
-                    << static_cast<char>(color)
-                    << static_cast<char>(color);
+            outFile << static_cast<char>(color.r)
+                    << static_cast<char>(color.g)
+                    << static_cast<char>(color.b);
         }
     }
     outFile.close();
