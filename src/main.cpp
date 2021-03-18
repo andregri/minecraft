@@ -60,12 +60,13 @@ int main(void)
     /* Create a map*/
     int mapHeight = 128;
     int mapWidth = 128;
-    float** elevation = new float*[mapHeight];
+    int numLevels = 50;
+    int** elevation = new int*[mapHeight];
     for (int i = 0; i < mapHeight; ++i) {
-        elevation[i] = new float[mapWidth];
+        elevation[i] = new int[mapWidth];
     }
-    map::generate(mapWidth, mapHeight, elevation);
-    map::savePPM("prova.ppm", mapWidth, mapHeight, elevation);
+    map::generate(mapWidth, mapHeight, numLevels, elevation);
+    map::savePPM("prova.ppm", mapWidth, mapHeight, numLevels, elevation);
 
     /* Create a camera */
     Camera camera;
@@ -106,14 +107,17 @@ int main(void)
     std::vector<Cube> cubeMap; 
     for (int z = 0; z < mapHeight; ++z) {
         for (int x = 0; x < mapWidth; ++x) {
-            int y = static_cast<int>(elevation[z][x] * 50);
-            for (int yy = 0; yy < y; ++yy) {
-                Cube c(x*16.0f, yy*16.0f, z*16.0f);
-                c.init();
-                cubeMap.push_back(c);
+            int y = elevation[z][x];
+            for (int yy = 0; yy <= y; ++yy) {
+                if ( map::isVisible(z, x, yy, mapHeight-1, mapWidth-1, elevation) ) {
+                    Cube c(x*16.0f, yy*16.0f, z*16.0f);
+                    c.init();
+                    cubeMap.push_back(c);
+                }
             }
         }
     }
+    std::cout << cubeMap.size() << std::endl; 
     
     Texture texture;
     texture.init();
@@ -127,8 +131,8 @@ int main(void)
     float lastFrame = 0.0f;
 
     // Enable depth test
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 

@@ -52,7 +52,7 @@ float map::noise(float x, float y) {
     return static_cast<float>(value);
 }
 
-void map::generate(int width, int height, float** elevation) {
+void map::generate(int width, int height, int numLevels, int** elevation) {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             // nx, ny are constrained in [-0.5; +0.5]
@@ -67,9 +67,8 @@ void map::generate(int width, int height, float** elevation) {
             // normalize
             e   /= (1 + 0.5 + 0.25);
 
-            // make terraces
-            float fudge_factor = 1.2;
-            elevation[y][x] = pow(e * fudge_factor, 2);
+            //
+            elevation[y][x] = static_cast<int>( pow(e, 2) * numLevels);
         }
     }
 }
@@ -84,13 +83,13 @@ map::Biome map::biome(float elevation) {
     else return map::Biome::SNOW;
 }
 
-void map::savePPM(const char* filename, int width, int height, float** elevation) {
+void map::savePPM(const char* filename, int width, int height, int numLevels, int** elevation) {
     //std::cout << "Save" << std::endl;
     std::ofstream outFile(filename, std::ios::binary);
     outFile << "P6\n" << width << " " << height << "\n255\n";
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            Biome b = biome(elevation[y][x]);
+            Biome b = biome( (float)elevation[y][x] / numLevels );
             Color color = toColor(b);
             //std::cout << x << " " << y << ": " << elevation[x][y] << " " << color << std::endl;
             outFile << static_cast<char>(color.r)
@@ -99,4 +98,24 @@ void map::savePPM(const char* filename, int width, int height, float** elevation
         }
     }
     outFile.close();
+}
+
+bool map::isVisible(int row, int col, float e, int rowMax, int colMax, int** elevation) {
+    if ( col == 0 || col == colMax || row == 0 || row == rowMax ) {
+        return true;
+    }
+
+    if (e == elevation[row][col]) {
+        return true;
+    }
+
+    if (e <= elevation[row-1][col] && // front
+        e <= elevation[row+1][col] && // back
+        e <= elevation[row][col+1] && // right
+        e <= elevation[row][col-1]    // left
+    ) {
+        return false;
+    }
+
+    return true;
 }

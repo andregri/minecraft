@@ -39,13 +39,16 @@ namespace map {
     float noise(float x, float y);
 
     // Generate an elevation map width x height
-    void generate(int width, int height, float** elevation);
+    void generate(int width, int height, int numLevels, int** elevation);
 
     // Return biome based on elevation
     Biome biome(float elevation);
 
     // Save a map to PPM file
-    void savePPM(const char* filename, int width, int height, float** elevation);
+    void savePPM(const char* filename, int width, int height, int numLevels, int** elevation);
+    
+    // Determine if a cube located at (x,y,z) is visible or not
+    bool isVisible(int row, int col, float e, int rowMax, int colMax, int** elevation);
 }
 
 #endif
