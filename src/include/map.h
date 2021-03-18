@@ -2,26 +2,34 @@
 #define __MAP_H__
 
 #include <string>
+#include <vector>
 
 class Map {
 public:
-    Map(int width, int height, const std::string& filepath);
-    Map(const Map&);
-    Map(Map&&);
-    Map& operator = (const Map&);
-    Map& operator = (const Map&&);
-    ~Map();
+    Map();
+    Map(int rows, int cols, int levels, const std::string& filepath);
 
-    void load();
+    bool isVisible(int row, int col, int e);
     void generate();
+
+    // getters
+    int rows();
+    int cols();
+    int maxElevation();
+    int elevation(int row, int col);
+    
+    // file utilities
+    bool load(const std::string&);
     void save();
+    void savePPM();
 
 private:
-    Map();
-    int m_width;
-    int m_height;
+    int m_numRows;
+    int m_numCols;
+    int m_maxElevation;
     std::string m_filepath;
-    float** m_elevation;
+    std::vector< std::vector<int> > m_elevation;
+    
 };
 
 namespace map {

@@ -47,3 +47,23 @@ target_link_libraries(Textured_cube PUBLIC
     STB_IMAGE
     noise
 )
+
+
+# Test
+add_executable(map_test
+    test/map_test.cpp
+    src/map.cpp
+)
+
+target_include_directories(map_test
+    PRIVATE src/include    
+)
+
+target_link_libraries(map_test PUBLIC 
+    ${OPENGL_LIBRARY}
+    ${GLEW_LIBRARY}
+    glfw
+    ${GLFW_LIBRARIES}
+    STB_IMAGE
+    noise
+)

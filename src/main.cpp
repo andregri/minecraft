@@ -58,15 +58,16 @@ int main(void)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     /* Create a map*/
-    int mapHeight = 128;
-    int mapWidth = 128;
-    int numLevels = 50;
-    int** elevation = new int*[mapHeight];
-    for (int i = 0; i < mapHeight; ++i) {
-        elevation[i] = new int[mapWidth];
+    std::string mapFilename = "worldMap.txt"; 
+    Map worldMap;
+    if ( !worldMap.load(mapFilename) ) {
+        int rows = 128;
+        int cols = 128;
+        int maxElevation = 50;
+        worldMap = Map(rows, cols, maxElevation, mapFilename);
+        worldMap.save();
+        worldMap.savePPM();
     }
-    map::generate(mapWidth, mapHeight, numLevels, elevation);
-    map::savePPM("prova.ppm", mapWidth, mapHeight, numLevels, elevation);
 
     /* Create a camera */
     Camera camera;
@@ -105,11 +106,11 @@ int main(void)
 
     /* Create cube for the map */
     std::vector<Cube> cubeMap; 
-    for (int z = 0; z < mapHeight; ++z) {
-        for (int x = 0; x < mapWidth; ++x) {
-            int y = elevation[z][x];
+    for (int z = 0; z < worldMap.rows(); ++z) {
+        for (int x = 0; x < worldMap.cols(); ++x) {
+            int y = worldMap.elevation(z, x);
             for (int yy = 0; yy <= y; ++yy) {
-                if ( map::isVisible(z, x, yy, mapHeight-1, mapWidth-1, elevation) ) {
+                if ( worldMap.isVisible(z, x, yy) ) {
                     Cube c(x*16.0f, yy*16.0f, z*16.0f);
                     c.init();
                     cubeMap.push_back(c);
