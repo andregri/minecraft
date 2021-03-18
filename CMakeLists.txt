@@ -29,10 +29,11 @@ add_executable(Textured_cube
     src/vertex_array.cpp
     src/quad.cpp
     src/texture.cpp
-    src/terrain.cpp
     src/cube.cpp
     src/camera.cpp
-    src/map.cpp
+    src/world/map.cpp
+    src/world/biome.cpp
+    src/world/renderer.cpp
 )
 
 target_include_directories(Textured_cube
@@ -52,7 +53,7 @@ target_link_libraries(Textured_cube PUBLIC
 # Test
 add_executable(map_test
     test/map_test.cpp
-    src/map.cpp
+    src/world/map.cpp
 )
 
 target_include_directories(map_test

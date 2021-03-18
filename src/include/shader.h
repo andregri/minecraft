@@ -14,6 +14,7 @@ class Shader {
         void Use() const;
 
         void SetUniform1i(const std::string & name, int value) const;
+        void SetUniformVec4f(const std::string & name, const glm::vec4&) const;
         void SetUniformMatrix4f(const std::string & name, const glm::mat4 & value) const;
 
     private:

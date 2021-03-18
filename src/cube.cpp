@@ -3,17 +3,31 @@
 
 Cube::Cube() :
     m_side(16.0f), m_origin(0.0f, 0.0f, 0.0f),
-    m_terrain_front(Grass2), m_terrain_behind(Grass2),
-    m_terrain_top(Grass), m_terrain_bot(Dirt),
-    m_terrain_left(Grass2), m_terrain_right(Grass2),
+    m_texCube( new world::TerrainCube(world::TC_Dirt) ),
     m_vao(), m_posVbo(), m_texVbo() {}
 
 Cube::Cube(float x, float y, float z) :
     m_side(16.0f), m_origin(x, y, z),
-    m_terrain_front(Grass2), m_terrain_behind(Grass2),
-    m_terrain_top(Grass), m_terrain_bot(Dirt),
-    m_terrain_left(Grass2), m_terrain_right(Grass2),
+    m_texCube( new world::TerrainCube(world::TC_Dirt) ),
     m_vao(), m_posVbo(), m_texVbo() {}
+
+Cube::Cube(const Cube& other) : 
+    m_side( other.m_side ), m_origin( other.m_origin ),
+    m_texCube( new world::TerrainCube(*other.m_texCube) ),
+    m_vao(other.m_vao), m_posVbo(other.m_posVbo), m_texVbo(other.m_texVbo) {}
+
+Cube& Cube::operator= (const Cube& rhs) {
+    if (this != &rhs) {
+        m_side = rhs.m_side;
+        m_origin = rhs.m_origin;
+        m_texCube.reset( new world::TerrainCube(*rhs.m_texCube) );
+        m_vao = rhs.m_vao;
+        m_posVbo = rhs.m_posVbo;
+        m_texVbo = rhs.m_texVbo;
+    }
+    
+    return *this;
+}
 
 void Cube::init() {
     m_vao.init();
@@ -41,6 +55,10 @@ void Cube::destroy() {
     m_posVbo.destroy();
     m_texVbo.destroy();
     m_vao.destroy();
+}
+
+void Cube::setTexture(const world::TerrainCube& terrainCube) {
+    m_texCube.reset( new world::TerrainCube( terrainCube ) );
 }
 
 void Cube::draw() {
@@ -148,47 +166,47 @@ void Cube::initTexBuffer() {
 
     float tex_coords_data[m_num_tex_coords] {
         // front
-        m_terrain_front.top_lx_u, m_terrain_front.top_lx_v, // top left
-        m_terrain_front.top_rx_u, m_terrain_front.top_rx_v, // top right
-        m_terrain_front.bot_rx_u, m_terrain_front.bot_rx_v, // bottom right
-        m_terrain_front.top_lx_u, m_terrain_front.top_lx_v, // top left
-        m_terrain_front.bot_rx_u, m_terrain_front.bot_rx_v, // bottom right
-        m_terrain_front.bot_lx_u, m_terrain_front.bot_lx_v,  // bottom left
+        m_texCube->front.top_lx_u, m_texCube->front.top_lx_v, // top left
+        m_texCube->front.top_rx_u, m_texCube->front.top_rx_v, // top right
+        m_texCube->front.bot_rx_u, m_texCube->front.bot_rx_v, // bottom right
+        m_texCube->front.top_lx_u, m_texCube->front.top_lx_v, // top left
+        m_texCube->front.bot_rx_u, m_texCube->front.bot_rx_v, // bottom right
+        m_texCube->front.bot_lx_u, m_texCube->front.bot_lx_v,  // bottom left
         // behind
-        m_terrain_behind.top_lx_u, m_terrain_behind.top_lx_v, // top left
-        m_terrain_behind.top_rx_u, m_terrain_behind.top_rx_v, // top right
-        m_terrain_behind.bot_rx_u, m_terrain_behind.bot_rx_v, // bottom right
-        m_terrain_behind.top_lx_u, m_terrain_behind.top_lx_v, // top left
-        m_terrain_behind.bot_rx_u, m_terrain_behind.bot_rx_v, // bottom right
-        m_terrain_behind.bot_lx_u, m_terrain_behind.bot_lx_v,  // bottom left
+        m_texCube->back.top_lx_u, m_texCube->back.top_lx_v, // top left
+        m_texCube->back.top_rx_u, m_texCube->back.top_rx_v, // top right
+        m_texCube->back.bot_rx_u, m_texCube->back.bot_rx_v, // bottom right
+        m_texCube->back.top_lx_u, m_texCube->back.top_lx_v, // top left
+        m_texCube->back.bot_rx_u, m_texCube->back.bot_rx_v, // bottom right
+        m_texCube->back.bot_lx_u, m_texCube->back.bot_lx_v,  // bottom left
         // right
-        m_terrain_right.top_lx_u, m_terrain_right.top_lx_v, // top left
-        m_terrain_right.top_rx_u, m_terrain_right.top_rx_v, // top right
-        m_terrain_right.bot_rx_u, m_terrain_right.bot_rx_v, // bottom right
-        m_terrain_right.top_lx_u, m_terrain_right.top_lx_v, // top left
-        m_terrain_right.bot_rx_u, m_terrain_right.bot_rx_v, // bottom right
-        m_terrain_right.bot_lx_u, m_terrain_right.bot_lx_v,  // bottom left
+        m_texCube->right.top_lx_u, m_texCube->right.top_lx_v, // top left
+        m_texCube->right.top_rx_u, m_texCube->right.top_rx_v, // top right
+        m_texCube->right.bot_rx_u, m_texCube->right.bot_rx_v, // bottom right
+        m_texCube->right.top_lx_u, m_texCube->right.top_lx_v, // top left
+        m_texCube->right.bot_rx_u, m_texCube->right.bot_rx_v, // bottom right
+        m_texCube->right.bot_lx_u, m_texCube->right.bot_lx_v,  // bottom left
         // left
-        m_terrain_left.top_lx_u, m_terrain_left.top_lx_v, // top left
-        m_terrain_left.top_rx_u, m_terrain_left.top_rx_v, // top right
-        m_terrain_left.bot_rx_u, m_terrain_left.bot_rx_v, // bottom right
-        m_terrain_left.top_lx_u, m_terrain_left.top_lx_v, // top left
-        m_terrain_left.bot_rx_u, m_terrain_left.bot_rx_v, // bottom right
-        m_terrain_left.bot_lx_u, m_terrain_left.bot_lx_v,  // bottom left
+        m_texCube->left.top_lx_u, m_texCube->left.top_lx_v, // top left
+        m_texCube->left.top_rx_u, m_texCube->left.top_rx_v, // top right
+        m_texCube->left.bot_rx_u, m_texCube->left.bot_rx_v, // bottom right
+        m_texCube->left.top_lx_u, m_texCube->left.top_lx_v, // top left
+        m_texCube->left.bot_rx_u, m_texCube->left.bot_rx_v, // bottom right
+        m_texCube->left.bot_lx_u, m_texCube->left.bot_lx_v,  // bottom left
         // top
-        m_terrain_top.top_lx_u, m_terrain_top.top_lx_v, // top left
-        m_terrain_top.top_rx_u, m_terrain_top.top_rx_v, // top right
-        m_terrain_top.bot_rx_u, m_terrain_top.bot_rx_v, // bottom right
-        m_terrain_top.top_lx_u, m_terrain_top.top_lx_v, // top left
-        m_terrain_top.bot_rx_u, m_terrain_top.bot_rx_v, // bottom right
-        m_terrain_top.bot_lx_u, m_terrain_top.bot_lx_v,  // bottom left
+        m_texCube->top.top_lx_u, m_texCube->top.top_lx_v, // top left
+        m_texCube->top.top_rx_u, m_texCube->top.top_rx_v, // top right
+        m_texCube->top.bot_rx_u, m_texCube->top.bot_rx_v, // bottom right
+        m_texCube->top.top_lx_u, m_texCube->top.top_lx_v, // top left
+        m_texCube->top.bot_rx_u, m_texCube->top.bot_rx_v, // bottom right
+        m_texCube->top.bot_lx_u, m_texCube->top.bot_lx_v,  // bottom left
         // bottom
-        m_terrain_bot.top_lx_u, m_terrain_bot.top_lx_v, // top left
-        m_terrain_bot.top_rx_u, m_terrain_bot.top_rx_v, // top right
-        m_terrain_bot.bot_rx_u, m_terrain_bot.bot_rx_v, // bottom right
-        m_terrain_bot.top_lx_u, m_terrain_bot.top_lx_v, // top left
-        m_terrain_bot.bot_rx_u, m_terrain_bot.bot_rx_v, // bottom right
-        m_terrain_bot.bot_lx_u, m_terrain_bot.bot_lx_v  // bottom left
+        m_texCube->bottom.top_lx_u, m_texCube->bottom.top_lx_v, // top left
+        m_texCube->bottom.top_rx_u, m_texCube->bottom.top_rx_v, // top right
+        m_texCube->bottom.bot_rx_u, m_texCube->bottom.bot_rx_v, // bottom right
+        m_texCube->bottom.top_lx_u, m_texCube->bottom.top_lx_v, // top left
+        m_texCube->bottom.bot_rx_u, m_texCube->bottom.bot_rx_v, // bottom right
+        m_texCube->bottom.bot_lx_u, m_texCube->bottom.bot_lx_v  // bottom left
     };
 
     m_texVbo.loadVertices(m_num_tex_coords, tex_coords_data);

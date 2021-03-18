@@ -35,6 +35,17 @@ void Shader::SetUniform1i(const std::string & name, int value) const {
     glUseProgram(0);
 }
 
+void Shader::SetUniformVec4f(const std::string & name, const glm::vec4& value) const {
+    Use();
+    int location = glGetUniformLocation(mShader, name.c_str());
+    if (location < 0) {
+        std::cout << "Uniform " << name << " not found!\n";
+        return;
+    }
+    glUniform4fv(location, 1, &value[0]);
+    glUseProgram(0);
+}
+
 void Shader::SetUniformMatrix4f(const std::string & name, const glm::mat4 & value) const {
     Use();
     int location = glGetUniformLocation(mShader, name.c_str());

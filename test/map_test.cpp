@@ -1,5 +1,7 @@
-#include "map.h"
+#include "world/map.h"
 #include <iostream>
+
+using namespace world;
 
 int main() {
     std::cout << "Test map generator:";

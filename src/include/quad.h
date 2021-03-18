@@ -5,7 +5,7 @@
 
 #include "vertex_array.h"
 #include "vertex_buffer.h"
-#include "terrain.h"
+#include "world/terrain.h"
 
 class Quad {
     public:
@@ -28,7 +28,7 @@ class Quad {
         glm::vec3 m_origin;  // bottom-left coord of the quad
         glm::vec3 m_right;  // vector from the bottom-left vertex to the bottom-right
         glm::vec3 m_up; // vector from the bottom-left vertex to the top-left
-        Terrain m_terrain;
+        world::Terrain m_terrain;
 
         VertexArray m_vao;
         VertexBuffer m_posVbo;

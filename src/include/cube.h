@@ -1,20 +1,23 @@
 #ifndef __CUBE_H__
 #define __CUBE_H__
 
+#include <memory>
 #include <glm/glm.hpp>
 #include "vertex_array.h"
 #include "vertex_buffer.h"
-#include "terrain.h"
+#include "world/terrain_cube.h"
 
 class Cube {
     public:
         Cube();
         Cube(float, float, float);
+        Cube(const Cube&);
+        Cube& operator = (const Cube&);
 
         void init();
         void destroy();
 
-        void setTerrains();
+        void setTexture(const world::TerrainCube&);
 
         void draw();
 
@@ -26,12 +29,7 @@ class Cube {
         float m_side;  // width of the cube
         glm::vec3 m_origin; // bottom-left coord of the cube
         
-        Terrain m_terrain_front;
-        Terrain m_terrain_behind;
-        Terrain m_terrain_right;
-        Terrain m_terrain_left;
-        Terrain m_terrain_top;
-        Terrain m_terrain_bot;
+        std::unique_ptr<world::TerrainCube> m_texCube;
 
 
         VertexArray m_vao;

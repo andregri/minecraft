@@ -4,19 +4,19 @@
 Quad::Quad() :
     m_w(1.0f), m_h(1.0f), m_origin(0.0f, 0.0f, 0.0f),
     m_right(1.0f, 0.0f, 0.0f), m_up(0.0f, 1.0f, 0.0f),
-    m_terrain(Dirt),
+    m_terrain(world::Dirt),
     m_vao(), m_posVbo(), m_texVbo() {}
 
 Quad::Quad(float w, float h) :
     m_w(w), m_h(h), m_origin(0.0f, 0.0f, 0.0f),
     m_right(1.0f, 0.0f, 0.0f), m_up(0.0f, 1.0f, 0.0f),
-    m_terrain(Dirt),
+    m_terrain(world::Dirt),
     m_vao(), m_posVbo(), m_texVbo() {}
 
 Quad::Quad(float w, float h, glm::vec3 origin) :
     m_w(w), m_h(h), m_origin(origin),
     m_right(1.0f, 0.0f, 0.0f), m_up(0.0f, 1.0f, 0.0f),
-    m_terrain(Dirt),
+    m_terrain(world::Dirt),
     m_vao(), m_posVbo(), m_texVbo() {}
 
 void Quad::init() {

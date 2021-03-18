@@ -17,7 +17,8 @@
 #include "texture.h"
 #include "cube.h"
 #include "camera.h"
-#include "map.h" 
+#include "world/map.h"
+#include "world/renderer.h"
 
 bool Keys[1024] = {false};
 
@@ -59,15 +60,18 @@ int main(void)
 
     /* Create a map*/
     std::string mapFilename = "worldMap.txt"; 
-    Map worldMap;
+    world::Map worldMap;
     if ( !worldMap.load(mapFilename) ) {
         int rows = 128;
         int cols = 128;
         int maxElevation = 50;
-        worldMap = Map(rows, cols, maxElevation, mapFilename);
+        worldMap = world::Map(rows, cols, maxElevation, mapFilename);
         worldMap.save();
         worldMap.savePPM();
     }
+
+    /* Create a map renderer */
+    world::Renderer mapRenderer(worldMap);
 
     /* Create a camera */
     Camera camera;
@@ -103,26 +107,10 @@ int main(void)
             cubeBase.push_back(c);
         }
     }
-
-    /* Create cube for the map */
-    std::vector<Cube> cubeMap; 
-    for (int z = 0; z < worldMap.rows(); ++z) {
-        for (int x = 0; x < worldMap.cols(); ++x) {
-            int y = worldMap.elevation(z, x);
-            for (int yy = 0; yy <= y; ++yy) {
-                if ( worldMap.isVisible(z, x, yy) ) {
-                    Cube c(x*16.0f, yy*16.0f, z*16.0f);
-                    c.init();
-                    cubeMap.push_back(c);
-                }
-            }
-        }
-    }
-    std::cout << cubeMap.size() << std::endl; 
     
     Texture texture;
     texture.init();
-    texture.loadData("../resources/200905210302_terrain.png");
+    texture.loadData("../resources/201301031509_terrain.png");
 
     // deltaTime variables
     // -------------------
@@ -184,7 +172,7 @@ int main(void)
             mvp = projection * view * model;
             shader.SetUniformMatrix4f("mvp", mvp);
             shader.Use();
-            for (auto c : cubeBase) {
+            for (auto& c : cubeBase) {
                 c.draw();
             }
 
@@ -192,10 +180,7 @@ int main(void)
             model = glm::mat4(1.0f);
             mvp = projection * view * model;
             shader.SetUniformMatrix4f("mvp", mvp);
-            shader.Use();
-            for (auto c : cubeMap) {
-                c.draw();
-            }
+            mapRenderer.draw(shader);
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
