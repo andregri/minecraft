@@ -19,6 +19,7 @@ public:
     int cols() const;
     int maxElevation() const;
     int elevation(int row, int col) const;
+    int seaLevel() const;
     
     // file utilities
     bool load(const std::string&);
@@ -29,6 +30,7 @@ private:
     int m_numRows;
     int m_numCols;
     int m_maxElevation;
+    int m_seaLevel;
     std::string m_filepath;
     std::vector< std::vector<int> > m_elevation;
     

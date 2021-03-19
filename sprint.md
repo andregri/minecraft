@@ -22,5 +22,6 @@
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 |       |       |       | map refactored in a class |     |     |     |
 |       |       |       | set cube texture according to biome      |       |       |       |
+|       |       |       |      | ocean now is flat      |       |       |
 
 ---

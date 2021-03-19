@@ -6,8 +6,7 @@ namespace world {
 Biome biome(int elevation, int maxElevation)
 {
     float e = (float)elevation / maxElevation;
-    if (e < 0.1) return Biome::WATER;
-    else if (e < 0.2) return Biome::BEACH;
+    if (e < 0.2) return Biome::BEACH;
     else if (e < 0.3) return Biome::FOREST;
     else if (e < 0.5) return Biome::JUNGLE;
     else if (e < 0.7) return Biome::SAVANNAH;

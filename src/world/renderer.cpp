@@ -11,6 +11,7 @@ Renderer::Renderer(const world::Map& map)
             int localMaxElevation = map.elevation(z, x);
             for (int e = 0; e <= localMaxElevation; ++e) {
             
+                // Add only outer cubes
                 if ( map.isVisible(z, x, e) ) {
                     Cube c(x*16.0f, e*16.0f, z*16.0f);
 
@@ -19,6 +20,16 @@ Renderer::Renderer(const world::Map& map)
                     TerrainCube tc = computeTerrain(b, e, localMaxElevation);
                     c.setTexture(tc);
 
+                    c.init();
+                    m_cubes.push_back(c);
+                }
+            }
+
+            // Add water cubes
+            if ( localMaxElevation < map.seaLevel() ) {
+                for (int e = localMaxElevation + 1; e < map.seaLevel(); ++e) {
+                    Cube c(x*16.0f, e*16.0f, z*16.0f);
+                    c.setTexture(TC_Water);
                     c.init();
                     m_cubes.push_back(c);
                 }
@@ -39,9 +50,6 @@ TerrainCube Renderer::computeTerrain(Biome biome, int elevation, int maxElevatio
 {
     switch (biome)
     {
-    case Biome::WATER:
-        return TC_Water;
-
     case Biome::BEACH:
         return TC_Sand;
 

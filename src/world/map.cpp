@@ -11,12 +11,19 @@
 
 namespace world {
 
-Map::Map()
-: m_numRows(0), m_numCols(0), m_maxElevation(0), m_filepath("") {}
+Map::Map() :
+    m_numRows(0),
+    m_numCols(0),
+    m_maxElevation(0),
+    m_seaLevel(0),
+    m_filepath("") {}
 
-Map::Map(int rows, int cols, int levels, const std::string& filepath)
-: m_numRows(rows), m_numCols(cols), m_maxElevation(levels),
- m_filepath(filepath)
+Map::Map(int rows, int cols, int levels, const std::string& filepath) :
+    m_numRows(rows),
+    m_numCols(cols),
+    m_maxElevation(levels),
+    m_seaLevel( levels/10 ),
+    m_filepath(filepath)
 {
     generate();
 }
@@ -63,6 +70,10 @@ int Map::elevation(int row, int col) const
     return m_elevation.at(row).at(col);
 }
 
+int Map::seaLevel() const {
+    return m_seaLevel;
+}
+
 void Map::generate() {
     noise::module::Perlin perlineNoise;
 
@@ -106,6 +117,8 @@ bool Map::load(const std::string& filepath)
 
     inFile >> s;
     m_maxElevation = std::stoi(s);
+
+    m_seaLevel = m_maxElevation / 10;
 
     for (int row = 0; row < m_numRows; ++row) {
         std::vector<int> rowValues;
